@@ -311,9 +311,9 @@ public final class USBMonitor {
 		// get detected devices
 		final HashMap<String, UsbDevice> deviceList = mUsbManager.getDeviceList();
 		// store those devices info before matching filter xml file
-		String fileName = Environment.getExternalStorageDirectory().getAbsolutePath()+ "/USBCamera/failed_devices.txt";
 
-		File logFile = new File(fileName);
+
+		File logFile = new File(mWeakContext.get().getExternalFilesDir(null), "failed_devices.txt");
 		if(!logFile.getParentFile().exists()) {
 			logFile.getParentFile().mkdirs();
 		}
