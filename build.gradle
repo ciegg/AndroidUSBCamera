@@ -27,6 +27,7 @@ task clean(type: Delete) {
 
 ext {
     androidXVersion = '1.1.0'
+    commonLibVersion= '4.1.1'
     versionCompiler = 28
     // when target=27, 9.0 is ok
     versionTarget = 27
