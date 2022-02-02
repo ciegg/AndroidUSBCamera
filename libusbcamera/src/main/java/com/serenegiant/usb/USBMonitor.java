@@ -83,6 +83,7 @@ public final class USBMonitor {
 	private final OnDeviceConnectListener mOnDeviceConnectListener;
 	private PendingIntent mPermissionIntent = null;
 	private List<DeviceFilter> mDeviceFilters = new ArrayList<DeviceFilter>();
+	private boolean checkRunning = false;
 
 	/**
 	 * コールバックをワーカースレッドで呼び出すためのハンドラー
@@ -185,9 +186,7 @@ public final class USBMonitor {
 				filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
 				context.registerReceiver(mUsbReceiver, filter);
 			}
-			// start connection check
-			mDeviceCounts = 0;
-			mAsyncHandler.postDelayed(mDeviceCheckRunnable, 1000);
+
 		}
 	}
 
@@ -496,7 +495,15 @@ public final class USBMonitor {
 					try {
 						// パーミッションがなければ要求する
 						mUsbManager.requestPermission(device, mPermissionIntent);
+						// start connection check
+						if (!checkRunning) {
+							checkRunning = true;
+							mDeviceCounts = 0;
+							mAsyncHandler.postDelayed(mDeviceCheckRunnable, 1000);
+						}
+
 					} catch (final Exception e) {
+						checkRunning = false;
 						// Android5.1.xのGALAXY系でandroid.permission.sec.MDM_APP_MGMTという意味不明の例外生成するみたい
 						Log.w(TAG, e);
 						processCancel(device);
