@@ -451,11 +451,10 @@ public final class USBMonitor {
 	 * return whether the specific Usb device has permission
 	 * @param device
 	 * @return true: 指定したUsbDeviceにパーミッションがある
-	 * @throws IllegalStateException
 	 */
-	public final boolean hasPermission(final UsbDevice device) throws IllegalStateException {
-		if (destroyed) throw new IllegalStateException("already destroyed");
-		return updatePermission(device, device != null && mUsbManager.hasPermission(device));
+	public final boolean hasPermission(final UsbDevice device) {
+		return !destroyed
+				&& (device != null) && mUsbManager.hasPermission(device);
 	}
 
 	/**
@@ -652,7 +651,6 @@ public final class USBMonitor {
 	private final void processCancel(final UsbDevice device) {
 		if (destroyed) return;
 		if (DEBUG) Log.v(TAG, "processCancel:");
-		updatePermission(device, false);
 		if (mOnDeviceConnectListener != null) {
 			mAsyncHandler.post(new Runnable() {
 				@Override
